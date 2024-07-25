@@ -19,13 +19,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
 @Entity
 @Table(name="users")
 public class UserEntity {
@@ -49,7 +47,7 @@ public class UserEntity {
                 , joinColumns = @JoinColumn(name="user_id")
                 , inverseJoinColumns  =@JoinColumn(name="role_id")
             ) //Tabla intermedia de relaciones
-    private Set<RoleEntity> Role;
+    private Set<RoleEntity> roles;
 
     
 
