@@ -29,7 +29,7 @@ public class JwtUtils {
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
-                .signWith(getSigntureKey(),  SignatureAlgorithm.ES256)
+                .signWith(getSigntureKey(),  SignatureAlgorithm.HS256)
                 .compact();
     }
     
