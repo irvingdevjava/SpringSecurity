@@ -10,8 +10,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.irvza.jwt.Conguration.Security.Filters.JwtAuthenticationFilter;
+import com.irvza.jwt.Conguration.Security.Filters.JwtAutorizationFilter;
 import com.irvza.jwt.Conguration.Security.Service.UserDetailServiceImpl;
 import com.irvza.jwt.Conguration.Security.jwt.JwtUtils;
 
@@ -24,10 +26,13 @@ public class SecurityConfig {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    JwtAutorizationFilter authAutorizationFilter;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager ) throws Exception{
 
-        JwtAuthenticationFilter jwtAuthenticationFilter= new JwtAuthenticationFilter(jwtUtils);
+        JwtAuthenticationFilter jwtAuthenticationFilter= new JwtAuthenticationFilter(jwtUtils, authenticationManager);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/api/v1/login"); //Ruta de login
 
@@ -41,6 +46,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             })
             .addFilter(jwtAuthenticationFilter)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 

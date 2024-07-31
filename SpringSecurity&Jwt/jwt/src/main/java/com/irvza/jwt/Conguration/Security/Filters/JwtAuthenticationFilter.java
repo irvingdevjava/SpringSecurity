@@ -15,7 +15,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.irvza.jwt.Conguration.Security.jwt.JwtUtils;
 
@@ -32,7 +31,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public JwtAuthenticationFilter(JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
-        setFilterProcessesUrl("/login"); // Configura la URL de login si es necesario
+        setFilterProcessesUrl("/api/v1/login"); // Configura la URL de login si es necesario
     }
 
     @Override
@@ -43,7 +42,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
             ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, String> requestBody = objectMapper.readValue(reader,  new TypeReference<Map<String, String>>() {});
+            Map<String, String> requestBody = objectMapper.readValue(reader, Map.class);
 
             username = requestBody.get("username");
             password = requestBody.get("password");
@@ -57,7 +56,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response, FilterChain chain,
+                                            HttpServletResponse response, 
+                                            FilterChain filterChain,
                                             Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
         String token = jwtUtils.GenerateAccessToken(user.getUsername());

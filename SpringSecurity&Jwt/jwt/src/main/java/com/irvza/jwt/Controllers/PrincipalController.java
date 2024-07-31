@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,9 +24,13 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 
 
+
 @RestController
 @RequestMapping("/api/v1")
 public class PrincipalController {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -40,7 +46,7 @@ public class PrincipalController {
 
         UserEntity userEntity=UserEntity.builder()
                                 .username(createUserDTO.getUsername())
-                                .password(createUserDTO.getPassword())
+                                .password(passwordEncoder.encode(createUserDTO.getPassword()))
                                 .email(createUserDTO.getEmail())
                                 .roles(roles)
                                 .build();
@@ -59,6 +65,19 @@ public class PrincipalController {
 
         return "Usuario eliminado con el id:".concat(id);
     }
+
+    @GetMapping("/mensaje")
+    public String getMethodName() {
+        return "Hello world";
+    }
+
+    @GetMapping("/nuevo")
+    public String mensajeSeguro() {
+        return "Mensaje seguro";
+    }
+
+    
+    
 
     
     
