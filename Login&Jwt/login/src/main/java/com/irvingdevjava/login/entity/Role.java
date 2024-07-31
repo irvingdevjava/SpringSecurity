@@ -9,10 +9,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 
 @Entity
+@Builder
 @Table(name = "roles")
 public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole name;
+
     public Long getId() {
         return id;
     }
@@ -29,13 +39,18 @@ public class Role {
         this.name = name;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Role(Long id, ERole name) {
+        this.id = id;
+        this.name = name;
+    }
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private ERole name;
+    public Role() {
+        
+    }
+
+    
+
+    
 
     
 }
